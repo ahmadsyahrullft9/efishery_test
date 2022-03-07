@@ -1,24 +1,23 @@
 package com.example.testefishery.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
 import com.example.testefishery.data.localdb.AppDb
 import com.example.testefishery.data.models.*
 import com.example.testefishery.data.networks.AppClient
+import com.example.testefishery.data.networks.BaseApiResponse
 import com.example.testefishery.data.networks.PriceApi
-import com.example.testefishery.data.utils.AppResource
+import com.example.testefishery.data.utils.NetworkResult
 import com.example.testefishery.data.utils.SearchParam
 import com.example.testefishery.data.utils.networkBoundResource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 
-class PriceRepository(appDb: AppDb) {
+class PriceRepository(appDb: AppDb) : BaseApiResponse() {
 
     private val TAG = "PriceRepository"
 
@@ -29,7 +28,7 @@ class PriceRepository(appDb: AppDb) {
     private val retrofit: Retrofit = AppClient.getInstance()
     private var listPriceCall: Call<List<Price>>? = null
 
-    fun getPriceList(): Flow<AppResource<List<Price>>> = networkBoundResource(
+    fun getPriceList(): Flow<NetworkResult<List<Price>>> = networkBoundResource(
         localCached = {
             if (size != null && area != null) {
                 priceDao.getPriceBySizeAndArea(size!!.size, area!!.city, area!!.province)
@@ -45,8 +44,18 @@ class PriceRepository(appDb: AppDb) {
             performRequest()
         },
         saveResult = {
-            it.asFlow().collect { priceList ->
-                priceDao.resetPriceList(priceList)
+            it.collect { appResource ->
+                when (appResource) {
+                    is NetworkResult.Success -> {
+                        priceDao.resetPriceList(appResource.data!!)
+                    }
+                    is NetworkResult.Error -> {
+                        Log.d(TAG, "getPriceList: ${appResource.errorMessage}")
+                    }
+                    is NetworkResult.Loading -> {
+                        Log.d(TAG, "getPriceList: loading")
+                    }
+                }
             }
         },
         checkToRenewData = {
@@ -54,28 +63,9 @@ class PriceRepository(appDb: AppDb) {
         }
     )
 
-    fun performRequest(): LiveData<List<Price>> {
-        val priceList = MutableLiveData<List<Price>>()
+    suspend fun performRequest(): Flow<NetworkResult<List<Price>>> = flow {
         val search = SearchParam(size, area).toStringJson()
         Log.d(TAG, "getPriceList: search = $search")
-        listPriceCall = retrofit.create(PriceApi::class.java).listPrice(search)
-        listPriceCall!!.enqueue(object : Callback<List<Price>> {
-            override fun onResponse(call: Call<List<Price>>, response: Response<List<Price>>) {
-                if (!call.isCanceled) {
-                    if (response.isSuccessful) {
-                        priceList.postValue(response.body())
-                    } else {
-                        priceList.postValue(emptyList())
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<List<Price>>, t: Throwable) {
-                if (!call.isCanceled) {
-                    priceList.postValue(emptyList())
-                }
-            }
-        })
-        return priceList
-    }
+        emit(safeApiCall { retrofit.create(PriceApi::class.java).listPrice(search) })
+    }.flowOn(Dispatchers.IO)
 }

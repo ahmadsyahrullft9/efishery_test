@@ -13,7 +13,7 @@ inline fun <Result, Request> networkBoundResource(
     //then check if you want to make a new request from api
     val newFlow = if (checkToRenewData(data)) {
         //set state to loading
-        emit(AppResource.Loading(data))
+        emit(NetworkResult.Loading(data))
 
         try {
             //save result of request api to local
@@ -21,17 +21,17 @@ inline fun <Result, Request> networkBoundResource(
 
             //emit result is success
             localCached().map {
-                AppResource.Success(it)
+                NetworkResult.Success(it)
             }
         } catch (t: Throwable) {
             //emit result is failed
             localCached().map {
-                AppResource.Error(t, it)
+                NetworkResult.Error(t.localizedMessage, it)
             }
         }
     } else {
         //emit result from local cached data
-        localCached().map { AppResource.Success(it) }
+        localCached().map { NetworkResult.Success(it) }
     }
 
     emitAll(newFlow)
