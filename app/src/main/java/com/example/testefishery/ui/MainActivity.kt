@@ -1,12 +1,15 @@
 package com.example.testefishery.ui
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.testefishery.R
+import android.view.LayoutInflater
+import com.example.testefishery.databinding.ActivityMainBinding
+import com.example.testefishery.ui.base.BaseActivity
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class MainActivity : BaseActivity<ActivityMainBinding>() {
+
+    override val bindingInflater: (LayoutInflater) -> ActivityMainBinding
+        get() = ActivityMainBinding::inflate
+
+    override fun setupView() {
+
     }
 }

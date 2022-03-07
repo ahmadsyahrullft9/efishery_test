@@ -1,7 +1,19 @@
 package com.example.testefishery.ui.listprice
 
-import androidx.fragment.app.Fragment
-import com.example.testefishery.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.example.testefishery.databinding.FragmentListPriceBinding
+import com.example.testefishery.ui.base.BaseFragment
 
-class ListPriceFragment:Fragment(R.layout.fragment_list_price) {
+class ListPriceFragment : BaseFragment<FragmentListPriceBinding>() {
+
+    val listPriceViewModel: ListPriceViewModel by viewModels()
+
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentListPriceBinding
+        get() = FragmentListPriceBinding::inflate
+
+    override fun setupView(binding: FragmentListPriceBinding) {
+
+    }
 }
