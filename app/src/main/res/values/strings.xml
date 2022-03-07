@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Test Efishery</string>
+    <string name="komoditas">Komoditas</string>
+    <string name="area">Area</string>
+    <string name="size">Size</string>
+    <string name="price">Price</string>
+    <string name="komoditas_hint">Komoditas description</string>
+    <string name="price_hint">Komoditas price</string>
+    <string name="time_parsed">Time Parsed</string>
 </resources>

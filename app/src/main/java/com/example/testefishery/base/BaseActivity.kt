@@ -1,4 +1,4 @@
-package com.example.testefishery.ui.base
+package com.example.testefishery.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.testefishery.ui.base
+package com.example.testefishery.base
 
 import android.content.Context
 import android.os.Bundle
