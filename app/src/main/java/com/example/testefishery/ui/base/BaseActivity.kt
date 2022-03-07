@@ -1,11 +1,11 @@
-package com.example.teskoffiesoft.config.ui
+package com.example.testefishery.ui.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 
-abstract class BindingActivity<T : ViewBinding> : AppCompatActivity() {
+abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
 
     abstract val bindingInflater: (LayoutInflater) -> T
     abstract fun setupView()

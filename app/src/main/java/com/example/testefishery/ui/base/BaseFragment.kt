@@ -1,4 +1,4 @@
-package com.example.teskoffiesoft.config.ui
+package com.example.testefishery.ui.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-abstract class BindingFragment<T : ViewBinding> : Fragment() {
+abstract class BaseFragment<T : ViewBinding> : Fragment() {
 
     private var _binding: T? = null
     private val binding get() = _binding!!
