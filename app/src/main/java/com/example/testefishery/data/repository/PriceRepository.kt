@@ -2,7 +2,9 @@ package com.example.testefishery.data.repository
 
 import android.util.Log
 import com.example.testefishery.data.localdb.AppDb
-import com.example.testefishery.data.models.*
+import com.example.testefishery.data.models.Area
+import com.example.testefishery.data.models.Price
+import com.example.testefishery.data.models.Size
 import com.example.testefishery.data.networks.AppClient
 import com.example.testefishery.data.networks.BaseApiResponse
 import com.example.testefishery.data.networks.PriceApi
@@ -14,10 +16,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.Call
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-class PriceRepository(appDb: AppDb) : BaseApiResponse() {
+class PriceRepository @Inject constructor(appDb: AppDb) : BaseApiResponse() {
 
     private val TAG = "PriceRepository"
 
@@ -26,7 +28,6 @@ class PriceRepository(appDb: AppDb) : BaseApiResponse() {
 
     private val priceDao = appDb.priceDao()
     private val retrofit: Retrofit = AppClient.getInstance()
-    private var listPriceCall: Call<List<Price>>? = null
 
     fun getPriceList(): Flow<NetworkResult<List<Price>>> = networkBoundResource(
         localCached = {

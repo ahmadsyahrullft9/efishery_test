@@ -10,10 +10,12 @@ import com.example.testefishery.data.models.Size
 import com.example.testefishery.data.repository.PriceRepository
 import com.example.testefishery.data.utils.NetworkResult
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class ListPriceViewModel(val priceRepository: PriceRepository) : ViewModel() {
+class ListPriceViewModel(private val priceRepository: PriceRepository) : ViewModel() {
 
-    internal class Factory(val priceRepository: PriceRepository) : ViewModelProvider.Factory {
+    internal class Factory @Inject constructor(val priceRepository: PriceRepository) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return ListPriceViewModel(priceRepository) as T
         }

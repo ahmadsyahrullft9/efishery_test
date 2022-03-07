@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.example.testefishery.MyApplication
 
 abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
 
@@ -15,6 +16,7 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
         get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as MyApplication).appComponent.inject(application)
         super.onCreate(savedInstanceState)
         _binding = bindingInflater.invoke(layoutInflater)
         setContentView(binding.root)
