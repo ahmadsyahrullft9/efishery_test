@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
 interface SizeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllSize(sizeList: List<Size>)
+    fun insertAllSize(sizeList: List<Size>)
 
     @Query("SELECT * FROM size")
-    suspend fun getAllSize(): Flow<List<Size>>
+    fun getAllSize(): Flow<List<Size>>
 
     @Query("DELETE FROM size")
-    suspend fun deleteAllSize()
+    fun deleteAllSize()
 }

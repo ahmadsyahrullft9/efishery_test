@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import com.example.testefishery.databinding.FragmentAddPriceBinding
 import com.example.testefishery.base.BaseFragment
 
-class AddPriceFragment:BaseFragment<FragmentAddPriceBinding>() {
+class AddPriceFragment : BaseFragment<FragmentAddPriceBinding>() {
+
+    override val hasInjector: Boolean get() = false
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentAddPriceBinding
         get() = FragmentAddPriceBinding::inflate

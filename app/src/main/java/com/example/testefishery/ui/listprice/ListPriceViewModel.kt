@@ -12,7 +12,8 @@ import com.example.testefishery.data.utils.NetworkResult
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ListPriceViewModel(private val priceRepository: PriceRepository) : ViewModel() {
+class ListPriceViewModel @Inject constructor(private val priceRepository: PriceRepository) :
+    ViewModel() {
 
     internal class Factory @Inject constructor(val priceRepository: PriceRepository) :
         ViewModelProvider.Factory {

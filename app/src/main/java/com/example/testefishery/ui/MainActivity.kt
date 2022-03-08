@@ -13,6 +13,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private lateinit var navController: NavController
 
+    override val hasInjector: Boolean get() = false
+
     override val bindingInflater: (LayoutInflater) -> ActivityMainBinding
         get() = ActivityMainBinding::inflate
 

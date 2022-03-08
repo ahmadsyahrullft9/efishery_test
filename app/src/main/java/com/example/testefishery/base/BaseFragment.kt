@@ -1,20 +1,25 @@
 package com.example.testefishery.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.example.testefishery.MyApplication
+import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment<T : ViewBinding> : Fragment() {
 
+    abstract val hasInjector: Boolean
     private var _binding: T? = null
     private val binding get() = _binding!!
 
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> T
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (hasInjector) AndroidSupportInjection.inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,11 +28,6 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     ): View? {
         _binding = bindingInflater.invoke(inflater, container, false)
         return requireNotNull(_binding).root
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().application as MyApplication).appComponent.inject(requireActivity().application)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

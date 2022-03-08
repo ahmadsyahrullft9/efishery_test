@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface PriceDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllPrice(priceList: List<Price>)
+    suspend fun insertAllPrice(vararg price: Price)
 
     @Query("SELECT * FROM price")
     fun getAllPrice(): Flow<List<Price>>
@@ -32,6 +32,6 @@ interface PriceDao {
     @Transaction
     suspend fun resetPriceList(newPriceList: List<Price>) {
         deleteAllPrice()
-        insertAllPrice(newPriceList)
+        insertAllPrice(*newPriceList.toTypedArray())
     }
 }

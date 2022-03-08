@@ -7,6 +7,8 @@ import com.example.testefishery.base.BaseFragment
 
 class FormFilterFragment : BaseFragment<FragmentFormfilterBinding>() {
 
+    override val hasInjector: Boolean get() = false
+
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFormfilterBinding
         get() = FragmentFormfilterBinding::inflate
 

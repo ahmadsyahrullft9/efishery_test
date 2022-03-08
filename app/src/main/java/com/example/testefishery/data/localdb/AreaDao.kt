@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
 interface AreaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllArea(areaList: List<Area>)
+    fun insertAllArea(areaList: List<Area>)
 
     @Query("SELECT * FROM area")
-    suspend fun getAllArea(): Flow<List<Area>>
+    fun getAllArea(): Flow<List<Area>>
 
     @Query("DELETE FROM area")
-    suspend fun deleteAllArea()
+    fun deleteAllArea()
 }

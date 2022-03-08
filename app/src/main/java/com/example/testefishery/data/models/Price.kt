@@ -1,15 +1,18 @@
 package com.example.testefishery.data.models
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "price")
 data class Price(
-    val area_kota: String,
-    val area_provinsi: String,
-    val komoditas: String,
-    val price: String,
-    val size: String,
-    val tgl_parsed: String,
-    val timestamp: String,
-    val uuid: String
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
+    var area_kota: String? = null,
+    var area_provinsi: String? = null,
+    var komoditas: String? = null,
+    var price: String? = null,
+    var size: String? = null,
+    var tgl_parsed: String? = null,
+    var timestamp: String? = null,
+    var uuid: String? = null
 )
