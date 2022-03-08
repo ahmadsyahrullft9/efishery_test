@@ -1,9 +1,6 @@
 package com.example.testefishery.data.localdb
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.testefishery.data.models.Size
 import kotlinx.coroutines.flow.Flow
 
@@ -11,11 +8,17 @@ import kotlinx.coroutines.flow.Flow
 interface SizeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllSize(sizeList: List<Size>)
+    suspend fun insertAllSize(vararg size: Size)
 
     @Query("SELECT * FROM size")
     fun getAllSize(): Flow<List<Size>>
 
     @Query("DELETE FROM size")
-    fun deleteAllSize()
+    suspend fun deleteAllSize()
+
+    @Transaction
+    suspend fun resetSizeList(sizeList: List<Size>) {
+        deleteAllSize()
+        insertAllSize(*sizeList.toTypedArray())
+    }
 }

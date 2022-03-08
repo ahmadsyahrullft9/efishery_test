@@ -30,9 +30,12 @@ class ListPriceViewModel @Inject constructor(private val priceRepository: PriceR
         priceList = priceListFlow.asLiveData()
     }
 
-    fun applyFilter(size: Size, area: Area) {
+    fun getPriceList() {
+        priceListFlow = priceRepository.getPriceList()
+    }
+
+    fun applyFilter(size: Size?, area: Area?) {
         priceRepository.size = size
         priceRepository.area = area
-        priceListFlow = priceRepository.getPriceList()
     }
 }

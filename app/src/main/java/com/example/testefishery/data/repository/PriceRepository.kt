@@ -1,6 +1,8 @@
 package com.example.testefishery.data.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.testefishery.data.localdb.AppDb
 import com.example.testefishery.data.models.Area
 import com.example.testefishery.data.models.Price
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -45,13 +48,13 @@ class PriceRepository @Inject constructor(appDb: AppDb) : BaseApiResponse() {
             performRequest()
         },
         saveResult = {
-            it.collect { appResource ->
-                when (appResource) {
+            it.collect { networkResult ->
+                when (networkResult) {
                     is NetworkResult.Success -> {
-                        priceDao.resetPriceList(appResource.data!!)
+                        priceDao.resetPriceList(networkResult.data!!)
                     }
                     is NetworkResult.Error -> {
-                        Log.d(TAG, "getPriceList: ${appResource.errorMessage}")
+                        Log.d(TAG, "getPriceList: ${networkResult.errorMessage}")
                     }
                     is NetworkResult.Loading -> {
                         Log.d(TAG, "getPriceList: loading")
@@ -63,6 +66,14 @@ class PriceRepository @Inject constructor(appDb: AppDb) : BaseApiResponse() {
             true
         }
     )
+
+    fun saveNewPrice(price: Price): LiveData<NetworkResult<ResponseBody>> {
+        val result = MutableLiveData<NetworkResult<ResponseBody>>()
+        submitPost(apiCall = {
+            retrofit.create(PriceApi::class.java).savePrice(listOf(price))
+        }) { result.postValue(it) }
+        return result
+    }
 
     suspend fun performRequest(): Flow<NetworkResult<List<Price>>> = flow {
         val search = SearchParam(size, area).toStringJson()

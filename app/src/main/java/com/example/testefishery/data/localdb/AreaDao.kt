@@ -1,9 +1,6 @@
 package com.example.testefishery.data.localdb
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.testefishery.data.models.Area
 import kotlinx.coroutines.flow.Flow
 
@@ -11,11 +8,17 @@ import kotlinx.coroutines.flow.Flow
 interface AreaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllArea(areaList: List<Area>)
+    suspend fun insertAllArea(vararg area: Area)
 
     @Query("SELECT * FROM area")
     fun getAllArea(): Flow<List<Area>>
 
     @Query("DELETE FROM area")
-    fun deleteAllArea()
+    suspend fun deleteAllArea()
+
+    @Transaction
+    suspend fun resetAreaList(newAreaList: List<Area>) {
+        deleteAllArea()
+        insertAllArea(*newAreaList.toTypedArray())
+    }
 }

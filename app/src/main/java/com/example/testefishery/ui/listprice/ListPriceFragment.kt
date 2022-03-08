@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.testefishery.MyApplication
 import com.example.testefishery.R
-import com.example.testefishery.data.utils.NetworkResult
-import com.example.testefishery.databinding.FragmentListPriceBinding
 import com.example.testefishery.base.BaseFragment
 import com.example.testefishery.base.RecyclerViewItemDecoration
 import com.example.testefishery.data.models.Price
+import com.example.testefishery.data.utils.NetworkResult
+import com.example.testefishery.data.utils.SearchParam
+import com.example.testefishery.databinding.FragmentListPriceBinding
 import net.tiap.todoappfirebase.customs.CustomAdapter
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class ListPriceFragment : BaseFragment<FragmentListPriceBinding>() {
 
     @Inject
     lateinit var listPriceViewModel: ListPriceViewModel
+
     lateinit var priceAdapter: CustomAdapter<Price, ListPriceViewHolder>
 
     override val hasInjector: Boolean get() = true
@@ -43,6 +45,16 @@ class ListPriceFragment : BaseFragment<FragmentListPriceBinding>() {
             setHasFixedSize(true)
             adapter = priceAdapter
             addItemDecoration(RecyclerViewItemDecoration(requireContext(), R.drawable.divider))
+        }
+
+        binding.fabAdd.setOnClickListener {
+            val action = ListPriceFragmentDirections.actionListPriceFragmentToAddPriceFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.fabFilter.setOnClickListener {
+            val action = ListPriceFragmentDirections.actionListPriceFragmentToFormFilterFragment()
+            findNavController().navigate(action)
         }
 
         listPriceViewModel.priceList.observe(this) { networkResult ->
@@ -78,10 +90,16 @@ class ListPriceFragment : BaseFragment<FragmentListPriceBinding>() {
                             if (price.size == null) price.size = "0"
                             price
                         }
-                        priceAdapter.addDataBatch(priceList)
+                        priceAdapter.setDataBatch(priceList)
                     }
                 }
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SearchParam>("SearchParam")
+            ?.observe(requireActivity()) { searchParam ->
+                listPriceViewModel.applyFilter(searchParam.size, searchParam.area)
+                listPriceViewModel.getPriceList()
+            }
     }
 }

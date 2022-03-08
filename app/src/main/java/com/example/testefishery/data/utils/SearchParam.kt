@@ -3,8 +3,9 @@ package com.example.testefishery.data.utils
 import com.example.testefishery.data.models.Area
 import com.example.testefishery.data.models.Size
 import org.json.JSONObject
+import java.io.Serializable
 
-class SearchParam(var size: Size? = null, var area: Area? = null) {
+class SearchParam(var size: Size? = null, var area: Area? = null) : Serializable {
 
     fun toJson(): JSONObject {
         val map = HashMap<String, String>()
